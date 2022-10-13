@@ -12,7 +12,7 @@ import com.alefesilva.minhasfinancas.model.entity.Usuario;
 import com.alefesilva.minhasfinancas.service.UsuarioService;
 
 @ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
+@ActiveProfiles("test") ///Para pegar o arquivo properties de teste(Com as config do banco h2)
 @SpringBootTest
 public class UsuarioRepositoryTest {
 
