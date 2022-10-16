@@ -1,5 +1,7 @@
 package com.alefesilva.minhasfinancas.model.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.alefesilva.minhasfinancas.model.entity.Usuario;
@@ -7,6 +9,8 @@ import com.alefesilva.minhasfinancas.model.entity.Usuario;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
 	
 	boolean existsByEmail(String email);
+	
+	Optional<Usuario> findByEmail(String email);
 	
 	/* findBy no spring conhecido como Query methods, uma das formas do Spring de realizar consultas na tabela
 	 Se tiver o dado ele retorna senão retorna vazio
