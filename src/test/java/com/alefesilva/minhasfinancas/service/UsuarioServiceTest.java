@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -26,13 +27,12 @@ public class UsuarioServiceTest {
 	@Autowired
 	UsuarioService service;
 
-	@Autowired
+	@MockBean // Cria uma instância de UsuarioRepository alocada ao invés da real
 	UsuarioRepository repository;
 	
 	@BeforeEach // Antes de executar o restante do código
 	public void setUp() {
 		// Mocks -> Para simular instância de classes e testar métodos
-		repository = Mockito.mock(UsuarioRepository.class);
 		service = new UsuarioServiceImpl(repository);
 	}
 
