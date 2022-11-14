@@ -29,8 +29,8 @@ public class Usuario { /// NoArgs (Cria Construtor sem argumento) / AllArgs (Cri
 	/// Podemos colocar @Data que já vem com todas as propriedades também
 
 	@Id
-	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private long id;
 
 	@Column(name = "nome")

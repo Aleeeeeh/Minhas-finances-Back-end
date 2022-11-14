@@ -49,7 +49,7 @@ public class LancamentoResource {
 		lancamentoFiltro.setAno(ano);
 		
 		Optional<Usuario> usuario = usuarioService.obterPorId(idUsuario);	
-		if(usuario.isPresent()) {
+		if(!usuario.isPresent()) {
 			return ResponseEntity.badRequest().body("Não foi possível realizar a consulta. Usuário não encontrado para ID informado.");
 		}else {
 			lancamentoFiltro.setUsuario(usuario.get());
@@ -76,7 +76,7 @@ public class LancamentoResource {
 		return service.obterPorId(id).map( entity -> { // Executa se encontrar o id
 			try {
 				Lancamento lancamento = converter(dto);
-				lancamento.setId(dto.getId()); // Passa o ID do registro para atualizar
+				lancamento.setId(id); // Passa o ID do registro para atualizar
 				service.atualizar(lancamento);
 				return ResponseEntity.ok(lancamento);
 			}catch(RegraNegocioException e) {
@@ -100,19 +100,25 @@ public class LancamentoResource {
 		
 		Lancamento lancamento = new Lancamento();
 		
-		lancamento.setId(dto.getId());
+		//lancamento.setId(dto.getId());
 		lancamento.setDescricao(dto.getDescricao());
 		lancamento.setAno(dto.getAno());
 		lancamento.setMes(dto.getMes());
 		lancamento.setValor(dto.getValor());
 		
 		Usuario usuario = usuarioService
-				.obterPorId(dto.getId())
+				.obterPorId(dto.getUsuario())
 				.orElseThrow( () -> new RegraNegocioException("Usuário não encontrado para o ID informado.") );
 		
 		lancamento.setUsuario(usuario);
-		lancamento.setTipo(TipoLancamento.valueOf(dto.getTipo()));
-		lancamento.setStatus(StatusLancamento.valueOf(dto.getStatus()));
+		
+		if(dto.getTipo() != null) {
+			lancamento.setTipo(TipoLancamento.valueOf(dto.getTipo()));
+		}
+		
+		if(dto.getStatus() != null) {
+			lancamento.setStatus(StatusLancamento.valueOf(dto.getStatus()));
+		}
 		
 		return lancamento;
 		
