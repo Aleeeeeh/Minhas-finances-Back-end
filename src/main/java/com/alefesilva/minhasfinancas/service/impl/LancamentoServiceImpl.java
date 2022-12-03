@@ -85,12 +85,12 @@ public class LancamentoServiceImpl implements LancamentoService{
 		}
 		
 		if(lancamento.getAno() == null || lancamento.getAno().toString().length() != 4) {
-			throw new RegraNegocioException("Informe um Ano válido;");
+			throw new RegraNegocioException("Informe um Ano válido.");
 		}
 		
 		//lancamento.getUsuario().getId() != null -> Verificar
 		if(lancamento.getUsuario() == null) {
-			throw new RegraNegocioException("Informe um Usuário");
+			throw new RegraNegocioException("Informe um Usuário.");
 		}
 		
 		//compareTo -> Compara o valor que recebemos por parâmetro com valor do banco, e a condição é a seguinte:
