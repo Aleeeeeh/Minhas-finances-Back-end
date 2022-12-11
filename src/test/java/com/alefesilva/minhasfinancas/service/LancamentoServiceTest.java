@@ -203,6 +203,7 @@ public class LancamentoServiceTest {
 		Lancamento lancamento = LancamentoRepositoryTest.criarLancamento();
 		lancamento.setId(id);
 		
+		//Ou seja quando encontrar retorne vazio, e assim no final do teste dará false
 		Mockito.when(repository.findById(id)).thenReturn(Optional.empty());
 		
 		//Execução
@@ -221,6 +222,13 @@ public class LancamentoServiceTest {
 		
 		//Instanciamos um lancamento vazio para começar as testar desde a primeira excessão desse método de validar
 		Lancamento lancamento = new Lancamento();
+		
+		/* 
+		 * Throwable é o tipo excessão
+		 * CatchThrowable dentro do pacote Assertions captura a excessão
+		 * Instanciando o objeto lançamento sem nenhum dado, vamos testando coluna a coluna de acordo com a ordem
+		 * que está na tabela. 
+		 */
 		
 		Throwable erro = Assertions.catchThrowable( () -> service.validar(lancamento) );
 		Assertions.assertThat(erro).isInstanceOf(RegraNegocioException.class).hasMessage("Informe uma Descrição válida.");
