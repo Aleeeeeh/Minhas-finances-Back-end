@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class MinhasfinancasApplication implements WebMvcConfigurer{
 	
 	/*addMapping( Coloca a URL das rotas nesse caso selecionamos para TODAS), e allowedOrigins( URL das aplicações ) que
-	 * irão enviar requisições para nossa API.allowedMethods(Métodos que poderão ser utilizados para receber requisiçõs.
+	 * irão enviar requisições para nossa API.allowedMethods(Métodos que poderão ser utilizados para receber requisições.
 	 */
 	
 	@Override
