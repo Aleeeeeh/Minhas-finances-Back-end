@@ -60,10 +60,30 @@ public class LancamentoResource {
 		return ResponseEntity.ok(lancamentos);
 	}
 	
+	@GetMapping("{id}")
+	public ResponseEntity obterLancamentoPorId( @PathVariable("id") Long id ) {
+		return service.obterPorId(id)
+				.map( lancamento -> new ResponseEntity(converterParaDTO(lancamento), HttpStatus.OK) )
+				.orElseGet( () -> new ResponseEntity(HttpStatus.NOT_FOUND));
+	}
+	
+	private LancamentoDTO converterParaDTO(Lancamento lancamento) {
+		return LancamentoDTO.builder()
+				.id(lancamento.getId())
+				.descricao(lancamento.getDescricao())
+				.valor(lancamento.getValor())
+				.mes(lancamento.getMes())
+				.ano(lancamento.getAno())
+				.status(lancamento.getStatus().name())
+				.tipo(lancamento.getTipo().name())
+				.usuario(lancamento.getUsuario().getId())
+				.build();
+	}
+	
 	@PostMapping
 	public ResponseEntity salvar( @RequestBody LancamentoDTO dto ) {
 		try {
-			Lancamento entidade = converter(dto);
+			Lancamento entidade = converterParaObjetoLancamento(dto);
 			entidade = service.salvar(entidade);
 			return ResponseEntity.ok(entidade);
 		}catch(RegraNegocioException e) {
@@ -76,7 +96,7 @@ public class LancamentoResource {
 	public ResponseEntity atualizar( @PathVariable("id") Long id, @RequestBody LancamentoDTO dto) {
 		return service.obterPorId(id).map( entity -> { // Executa se encontrar o id
 			try {
-				Lancamento lancamento = converter(dto);
+				Lancamento lancamento = converterParaObjetoLancamento(dto);
 				lancamento.setId(id); // Passa o ID do registro para atualizar
 				service.atualizar(lancamento);
 				return ResponseEntity.ok(lancamento);
@@ -117,7 +137,7 @@ public class LancamentoResource {
 		);
 	}
 	
-	private Lancamento converter(LancamentoDTO dto) {
+	private Lancamento converterParaObjetoLancamento(LancamentoDTO dto) {
 		
 		Lancamento lancamento = new Lancamento();
 		
