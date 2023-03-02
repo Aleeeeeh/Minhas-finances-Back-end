@@ -4,6 +4,7 @@ package com.alefesilva.minhasfinancas.service.impl;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,10 +18,13 @@ import com.alefesilva.minhasfinancas.service.UsuarioService;
 public class UsuarioServiceImpl implements UsuarioService { ///@Service irá criar uma instância para quando precisar utilizar 
 															///essa dependência
 	private UsuarioRepository repository;
+	private PasswordEncoder encoder;
+	
 	///Autowride Conceito da injeção de dependência, funciona no atributo também, mas o mais indicado é no construtor
 	@Autowired
-	public UsuarioServiceImpl(UsuarioRepository repository) {
+	public UsuarioServiceImpl(UsuarioRepository repository, PasswordEncoder encoder) {
 		this.repository = repository;
+		this.encoder = encoder;
 	}
 
 	@Override
@@ -31,12 +35,20 @@ public class UsuarioServiceImpl implements UsuarioService { ///@Service irá cri
 		if(!usuario.isPresent()) {
 			throw new ErroAutenticacao("Usuário não encontrado para o email informado.");
 		}
-		//Isso de forma didática, mas na prática quando disparar o erro para no usuário colocar que e-mail ou senha
-		//é inválido, assim dando maior segurança.
-		if(!usuario.get().getSenha().equals(senha)) {
+		
+		//Método matches ele valida senha digitada com senha criptografada do banco de bater retorna true
+		boolean senhasConferem = encoder.matches(senha, usuario.get().getSenha());
+		
+		if(!senhasConferem) {
 			throw new ErroAutenticacao("Senha inválida.");
 		}
 		
+		/*Isso de forma didática, mas na prática quando disparar o erro para no usuário colocar que e-mail ou senha
+		é inválido, assim dando maior segurança.
+		if(!usuario.get().getSenha().equals(senha)) {
+			throw new ErroAutenticacao("Senha inválida.");
+		}
+		*/
 		return usuario.get(); //usuario.get() -> Retorna a instância do usuário
 	}
 
@@ -44,6 +56,8 @@ public class UsuarioServiceImpl implements UsuarioService { ///@Service irá cri
 	@Transactional
 	public Usuario salvarUsuario(Usuario usuario) {
 		validarEmail(usuario.getEmail());
+		criptografarSenha(usuario);
+		
 		return repository.save(usuario);
 	}
 
@@ -55,6 +69,12 @@ public class UsuarioServiceImpl implements UsuarioService { ///@Service irá cri
 			throw new RegraNegocioException("Já existe um usuário cadastrado com esse e-mail.");
 		}
 
+	}
+	
+	public void criptografarSenha(Usuario usuario) {
+		String senha = usuario.getSenha();
+		String senheCripto = encoder.encode(senha);
+		usuario.setSenha(senheCripto);
 	}
 
 	@Override
