@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alefesilva.minhasfinancas.api.dto.TokenDTO;
 import com.alefesilva.minhasfinancas.api.dto.UsuarioDTO;
 import com.alefesilva.minhasfinancas.exception.ErroAutenticacao;
 import com.alefesilva.minhasfinancas.exception.RegraNegocioException;
 import com.alefesilva.minhasfinancas.model.entity.Usuario;
+import com.alefesilva.minhasfinancas.service.JwtService;
 import com.alefesilva.minhasfinancas.service.LancamentoService;
 import com.alefesilva.minhasfinancas.service.UsuarioService;
 
@@ -30,11 +32,16 @@ public class UsuarioResource {
 	
 	private final LancamentoService lancamentoService;
 	
+	private final JwtService jwtService; //Lembrete: Por ter apenas uma implementação para essa interface, não preciso importar pelo impl
+	
 	@PostMapping("/autenticar")
-	public ResponseEntity autenticar( @RequestBody UsuarioDTO dto ) {
+	public ResponseEntity<?> autenticar( @RequestBody UsuarioDTO dto ) { //? Pois pode retornar mais de um objeto
 		try {
 			Usuario usuarioAutenticado = service.autenticar(dto.getEmail(), dto.getSenha());
-			return ResponseEntity.ok(usuarioAutenticado);
+			String token = jwtService.gerarToken(usuarioAutenticado); // Gera o token
+			TokenDTO tokenDTO = new TokenDTO(usuarioAutenticado.getNome(), token); // Instancia a classe TokenDTO, passando o nome do usuário autenticado e o token gerado
+			
+			return ResponseEntity.ok(tokenDTO);
 		}catch(ErroAutenticacao e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
@@ -43,7 +50,7 @@ public class UsuarioResource {
 	//RequestBody serve para pegarmos o JSON recebido da requisição e atribuir os atributos a classe usuarioDTO
 	//http://localhost:8080/api/usuarios
 	@PostMapping
-	public ResponseEntity salvar( @RequestBody UsuarioDTO dto ) {
+	public ResponseEntity<?> salvar( @RequestBody UsuarioDTO dto ) {
 		
 		Usuario usuario = Usuario.builder()
 				.nome(dto.getNome())
@@ -53,18 +60,18 @@ public class UsuarioResource {
 		
 		try {
 			Usuario usuarioSalvo = service.salvarUsuario(usuario);
-			return new ResponseEntity(usuarioSalvo, HttpStatus.CREATED);
+			return new ResponseEntity<>(usuarioSalvo, HttpStatus.CREATED);
 		}catch(RegraNegocioException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
 	
 	@GetMapping("{id}/saldo")
-	public ResponseEntity obterSaldo( @PathVariable("id") Long id ) {
+	public ResponseEntity<?> obterSaldo( @PathVariable("id") Long id ) {
 		Optional<Usuario> usuario = service.obterPorId(id);
 		
 		if(!usuario.isPresent()) {
-			return new ResponseEntity(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		
 		BigDecimal saldo = lancamentoService.obterSaldoPorUsuario(id);
