@@ -1,7 +1,12 @@
 package com.alefesilva.minhasfinancas.config;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.Ordered;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,6 +16,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import com.alefesilva.minhasfinancas.api.resource.JwtTokenFilter;
 import com.alefesilva.minhasfinancas.service.JwtService;
@@ -65,6 +73,33 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		.and()
 		.addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class); //Adiciona antes no filtro para autenticar
+	}
+	
+	/*Libera o acesso para TODOS os métodos get, post ... vindo de qualquer aplicação, pois a segurança já está feita
+	 * pelo autenticação por TOKEN
+	 */
+	@Bean
+	public FilterRegistrationBean<CorsFilter> corsFilter(){
+		
+		List<String> all = Arrays.asList("*");
+		
+		CorsConfiguration config = new CorsConfiguration();
+		config.setAllowedMethods(all);
+		config.setAllowedOriginPatterns(all); // Permite qualquer aplicação envie para API(De todo modo com excessão das rotas de cadastro e autenticação o app terá de ter a chave de assinatura para gerar e valida o token)
+		config.setAllowedHeaders(all); // Permite que mande qualquer coisa no HEADER
+		config.setAllowCredentials(true); // Permite que mande credenciais para API
+		
+		//As permissões acima para TODAS as rotas e com isso usamos a expressão /**
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", config);
+		
+		CorsFilter corFilter = new CorsFilter(source);
+		
+		FilterRegistrationBean<CorsFilter> filter = new FilterRegistrationBean<CorsFilter>(corFilter);
+		filter.setOrder(Ordered.HIGHEST_PRECEDENCE);
+		
+		return filter;
+		
 	}
 	
 }

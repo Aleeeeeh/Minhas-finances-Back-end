@@ -52,10 +52,11 @@ public class JwtTokenFilter extends OncePerRequestFilter{
 			//Pegando contexto do Spring security e jogando nessa autenticação
 			SecurityContextHolder.getContext().setAuthentication(user);
 			
-			//Depois de interceptar a requisição dar continuidade na execução
-			filterChain.doFilter(request, response);
 		}
 	}
+	
+	//Depois de interceptar a requisição dar continuidade na execução
+	filterChain.doFilter(request, response);
 	
 	}
 
