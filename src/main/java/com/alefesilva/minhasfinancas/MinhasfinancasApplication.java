@@ -1,3 +1,4 @@
+
 package com.alefesilva.minhasfinancas;
 
 import org.springframework.boot.SpringApplication;

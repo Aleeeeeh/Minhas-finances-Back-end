@@ -3,6 +3,7 @@ package com.alefesilva.minhasfinancas.service.impl;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -33,10 +34,15 @@ public class JwtServiceImpl implements JwtService{
 		Instant instant = dataHoraExpiracao.atZone(ZoneId.systemDefault()).toInstant(); //Pegando do fuso horário do SO
 		Date data = Date.from(instant); // Do pacote util, convertendo para o tipo date
 		
+		String horaExpiracaoToken = dataHoraExpiracao.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+		
 		String token = Jwts
 						.builder()
 						.setExpiration(data)
-						.setSubject(usuario.getEmail()) //Identificação do usuário, pode ser email, idUser etc ...
+						.setSubject(usuario.getEmail()) //Identificação do usuário, pode ser email, idUser etc ....
+						.claim("userid",usuario.getId())
+						.claim("nome",usuario.getNome())
+						.claim("horaExpiracao", horaExpiracaoToken)
 						.signWith( SignatureAlgorithm.HS512, chaveAssinatura) //Algoritmo de criptografia e nossa chave única criada no app.properties
 					    .compact(); // Constrói o token
 		return token;
