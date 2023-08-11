@@ -54,9 +54,9 @@ public class Lancamento {
 	@Column(name = "valor")
 	private BigDecimal valor;
 
+	@Builder.Default
 	@Column(name = "data_cadastro")
-	@Convert(converter = Jsr310JpaConverters.LocalDateConverter.class) // Converte para data do JPA
-	private LocalDate dataCadastro;
+	private LocalDate dataCadastro = LocalDate.now();
 
 	@Column(name = "tipo")
 	@Enumerated(value = EnumType.STRING)

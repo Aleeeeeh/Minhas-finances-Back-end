@@ -1,6 +1,7 @@
 package com.alefesilva.minhasfinancas.api.resource;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -76,6 +77,16 @@ public class UsuarioResource {
 		
 		BigDecimal saldo = lancamentoService.obterSaldoPorUsuario(id);
 		return ResponseEntity.ok(saldo);
+	}
+	
+	@GetMapping
+	public ResponseEntity<?> listagemUsuariosCadastrados(){
+		try {
+			List<Usuario> listaUsuarios = service.retornaUsuariosCadastrados();
+			return ResponseEntity.ok(listaUsuarios);
+		} catch (RegraNegocioException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 	
 }

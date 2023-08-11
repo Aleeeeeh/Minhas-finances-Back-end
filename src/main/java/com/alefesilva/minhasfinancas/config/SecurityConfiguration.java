@@ -59,18 +59,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		/*Em resumo as duas rotas podem receber requisiçoes sem precisar autenticar, as demais mantém sendo 
-		ecessário passar a senha
+		necessário passar a senha
 		Obs: Em casos de perfil de acesso poderiamos usar propriedades como hasAnyRole('RH','ADM') e hasAuthority
 		ou seja,ambos departamentos irão utilizar essa rota apenas*/
 		http.csrf().disable()
 		.authorizeRequests()      //Essas rotas já estarão autenticadas(autentica user e cadastro de user)
 		.antMatchers(HttpMethod.POST, "/api/usuarios/autenticar").permitAll() 
 		.antMatchers(HttpMethod.POST, "/api/usuarios").permitAll()
+		.antMatchers("/h2-console/**").permitAll() 
 		.anyRequest().authenticated()
 		.and()
 		/*Quando usuário autentica na API grava na sessão e nas demais não pede mais autenticação, esse trecho faz com que 
 		toda requisição seja obrigatório autenticar*/
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+		.and().headers().frameOptions().sameOrigin() //Libera a interface do h2-console
 		.and()
 		.addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class); //Adiciona antes no filtro para autenticar
 	}
