@@ -59,7 +59,7 @@ public class LancamentoServiceImpl implements LancamentoService{
 		//o starting que busca pelo inicio da String, end no final e assim por diante. No exemplo
 		//utilizamos o que busca a String como um todo.
 		
-		Example example = Example.of(lancamentoFiltro,
+		Example<Lancamento> example = Example.of(lancamentoFiltro,
 				ExampleMatcher.matching()
 				.withIgnoreCase()
 				.withStringMatcher(StringMatcher.CONTAINING)); //Funciona como um like
