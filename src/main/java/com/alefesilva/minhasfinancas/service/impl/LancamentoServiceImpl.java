@@ -128,6 +128,13 @@ public class LancamentoServiceImpl implements LancamentoService{
 		
 		return receitas.subtract(despesas);
 	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<Lancamento> buscarLancamentosPeriodo(Long id, Integer mesAtual, Integer mesFinal, Integer anoAtual, 
+													Integer anoFinal){
+		return repository.obterLancamentosPorPeriodoEUsuario(id, mesAtual, mesFinal, anoAtual, anoFinal);
+	}
 
 }
 

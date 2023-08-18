@@ -1,6 +1,7 @@
 package com.alefesilva.minhasfinancas.model.repository;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +24,15 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, Long>{
 			@Param("idUsuario") Long idUsuario, 
 			@Param("tipo") TipoLancamento tipo ,
 			@Param("status") StatusLancamento status);
+	
+	
+	@Query( value = 
+			"select l from Lancamento l join l.usuario u where u.id = :idUsuario and l.mes between :mesAtual "
+			+ "and :mesFinal and l.ano between :anoAtual and :anoFinal")
+	List<Lancamento> obterLancamentosPorPeriodoEUsuario(
+			@Param("idUsuario") Long idUsuario,
+			@Param("mesAtual") Integer mesAtual,
+			@Param("mesFinal") Integer mesFinal,
+			@Param("anoAtual") Integer anoAtual,
+			@Param("anoFinal") Integer anoFinal);
 }
