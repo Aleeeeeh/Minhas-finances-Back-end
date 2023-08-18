@@ -88,4 +88,9 @@ public class UsuarioServiceImpl implements UsuarioService { ///@Service irá cri
 		return repository.findAll();
 	}
 
+	@Override
+	public Usuario atualizar(Usuario usuario) {
+		return repository.save(usuario);
+	}
+
 }
