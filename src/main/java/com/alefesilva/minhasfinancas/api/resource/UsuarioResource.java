@@ -1,8 +1,8 @@
 package com.alefesilva.minhasfinancas.api.resource;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +37,8 @@ public class UsuarioResource {
 	private final LancamentoService lancamentoService;
 	
 	private final JwtService jwtService; //Lembrete: Por ter apenas uma implementação para essa interface, não preciso importar pelo impl
+	
+	private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 	
 	@PostMapping("/autenticar")
 	public ResponseEntity<?> autenticar( @RequestBody UsuarioDTO dto ) { //? Pois pode retornar mais de um objeto
@@ -96,7 +98,11 @@ public class UsuarioResource {
 	public ResponseEntity<?> atualizarStatusUltimoLogout(@PathVariable("id") Long id){
 		return service.obterPorId(id).map(entidadeUsuario ->{
 			try {
-				entidadeUsuario.setUltimoLogin(LocalDateTime.now());
+				Date dataEHoraAtual = new Date();
+				
+				String dataFormatada = sdf.format(dataEHoraAtual);
+				
+				entidadeUsuario.setUltimoLogin(dataFormatada.toString());
 				service.atualizar(entidadeUsuario);
 				return ResponseEntity.ok(entidadeUsuario);
 			}catch(RegraNegocioException e) {

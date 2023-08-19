@@ -1,7 +1,9 @@
 package com.alefesilva.minhasfinancas.model.entity;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -49,6 +51,6 @@ public class Usuario { /// NoArgs (Cria Construtor sem argumento) / AllArgs (Cri
 	private String senha;
 	
 	@Column(name = "ultimoLogin")
-	private LocalDateTime ultimoLogin;
+	private String ultimoLogin;
 
 }

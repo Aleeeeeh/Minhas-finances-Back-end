@@ -63,7 +63,7 @@ public class LancamentoServiceImpl implements LancamentoService{
 				ExampleMatcher.matching()
 				.withIgnoreCase()
 				.withIgnoreNullValues()
-				.withIgnorePaths("id","descricao","tipo","valor","dataCadastro","status")
+				.withIgnorePaths("id","valor","dataCadastro","status")
 				.withStringMatcher(StringMatcher.CONTAINING)); //Funciona como um like
 		
 		return repository.findAll(example);
