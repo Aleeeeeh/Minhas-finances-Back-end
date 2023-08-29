@@ -11,3 +11,6 @@ Token JWT <br/>
 H2-console(Banco de dados em memória para testes) <br/>
 Banco de dados postgreSQL <br/>
 
+## Autor
+#### Alefe Ferreira da Silva
+https://www.linkedin.com/in/alefe-ferreira-322125235/
