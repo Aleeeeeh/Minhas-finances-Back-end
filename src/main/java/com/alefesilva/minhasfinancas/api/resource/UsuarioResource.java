@@ -1,6 +1,8 @@
 package com.alefesilva.minhasfinancas.api.resource;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,6 +37,8 @@ public class UsuarioResource {
 	private final LancamentoService lancamentoService;
 	
 	private final JwtService jwtService; //Lembrete: Por ter apenas uma implementação para essa interface, não preciso importar pelo impl
+	
+	private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 	
 	@PostMapping("/autenticar")
 	public ResponseEntity<?> autenticar( @RequestBody UsuarioDTO dto ) { //? Pois pode retornar mais de um objeto
@@ -87,6 +92,24 @@ public class UsuarioResource {
 		} catch (RegraNegocioException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
+	}
+	
+	@PutMapping("{id}/ultimoLogout")
+	public ResponseEntity<?> atualizarStatusUltimoLogout(@PathVariable("id") Long id){
+		return service.obterPorId(id).map(entidadeUsuario ->{
+			try {
+				Date dataEHoraAtual = new Date();
+				
+				String dataFormatada = sdf.format(dataEHoraAtual);
+				
+				entidadeUsuario.setUltimoLogin(dataFormatada.toString());
+				service.atualizar(entidadeUsuario);
+				return ResponseEntity.ok(entidadeUsuario);
+			}catch(RegraNegocioException e) {
+				return ResponseEntity.badRequest().body(e.getMessage());
+			}
+		}).orElseGet(() ->
+			new ResponseEntity<>("Erro ao atualizar status de último logout do usuário", HttpStatus.BAD_REQUEST));
 	}
 	
 }

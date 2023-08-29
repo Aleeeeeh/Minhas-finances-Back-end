@@ -24,4 +24,6 @@ public interface LancamentoService {
 	Optional<Lancamento> obterPorId(Long id);
 	
 	BigDecimal obterSaldoPorUsuario(Long id);
+	
+	List<Lancamento> buscarLancamentosPeriodo(Long id, Integer mesAtual, Integer mesFinal, Integer anoAtual, Integer anoFinal);
 }

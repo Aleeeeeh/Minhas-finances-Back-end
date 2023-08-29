@@ -167,6 +167,28 @@ public class LancamentoResource {
 		
 	}
 	
+	@GetMapping("/peridoLancamento")
+	public ResponseEntity<?> buscaLancamentoPorPeriodoInformado(
+			@RequestParam(value = "anoAtual", required = true) Integer anoAtual,
+			@RequestParam(value = "mesAtual", required = true) Integer mesAtual,
+			@RequestParam(value = "mesFinal", required = true) Integer mesFinal,
+			@RequestParam(value = "anoFinal", required = true) Integer anoFinal,
+			@RequestParam(value = "usuarioId", required = true) Long usuarioId){
+		
+		try {
+			Optional<Usuario> usuario = usuarioService.obterPorId(usuarioId);	
+			if(!usuario.isPresent()) {
+				return ResponseEntity.badRequest().body("Não foi possível realizar a consulta. Usuário não encontrado para ID informado.");
+			}
+			
+			List<Lancamento> lancamentos = service.buscarLancamentosPeriodo(usuarioId, mesAtual, mesFinal, anoAtual, anoFinal);
+			return ResponseEntity.ok(lancamentos);
+		}catch(RegraNegocioException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+		
+	}
+	
 }
 
 

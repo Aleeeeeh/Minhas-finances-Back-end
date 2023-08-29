@@ -1,5 +1,10 @@
 package com.alefesilva.minhasfinancas.model.entity;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -44,5 +49,8 @@ public class Usuario { /// NoArgs (Cria Construtor sem argumento) / AllArgs (Cri
 	@Column(name = "senha")
 	@JsonIgnore
 	private String senha;
+	
+	@Column(name = "ultimoLogin")
+	private String ultimoLogin;
 
 }

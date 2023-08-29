@@ -62,6 +62,8 @@ public class LancamentoServiceImpl implements LancamentoService{
 		Example<Lancamento> example = Example.of(lancamentoFiltro,
 				ExampleMatcher.matching()
 				.withIgnoreCase()
+				.withIgnoreNullValues()
+				.withIgnorePaths("id","valor","dataCadastro","status")
 				.withStringMatcher(StringMatcher.CONTAINING)); //Funciona como um like
 		
 		return repository.findAll(example);
@@ -127,6 +129,13 @@ public class LancamentoServiceImpl implements LancamentoService{
 		}
 		
 		return receitas.subtract(despesas);
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<Lancamento> buscarLancamentosPeriodo(Long id, Integer mesAtual, Integer mesFinal, Integer anoAtual, 
+													Integer anoFinal){
+		return repository.obterLancamentosPorPeriodoEUsuario(id, mesAtual, mesFinal, anoAtual, anoFinal);
 	}
 
 }

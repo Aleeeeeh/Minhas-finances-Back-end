@@ -15,4 +15,6 @@ public interface UsuarioService {
 	Optional<Usuario> obterPorId(Long id);
 	
 	List<Usuario> retornaUsuariosCadastrados();
+	
+	Usuario atualizar(Usuario usuario);
 }
